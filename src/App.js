@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import { AppLayout } from "./AppLayout";
+import { useState } from "react";
 
-function App() {
+export const App = () => {
+  const [currentPlayer, setCurrentPlayer] = useState("x");
+  const [isGameEnded, setIsGameEnded] = useState(false);
+  const [isDraw, setIsDraw] = useState(false);
+  const [field, setField] = useState(["", "", "", "", "", "", "", "", ""]);
+  const restartGame = () => {
+    setCurrentPlayer("x");
+    setIsGameEnded(false);
+    setIsDraw(false);
+    setField(["", "", "", "", "", "", "", "", ""]);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppLayout
+      field={field}
+      setField={setField}
+      isDraw={isDraw}
+      isGameEnded={isGameEnded}
+      setIsGameEnded={setIsGameEnded}
+      currentPlayer={currentPlayer}
+      setCurrentPlayer={setCurrentPlayer}
+      setIsDraw={setIsDraw}
+      restartGame={restartGame}
+    ></AppLayout>
   );
-}
-
-export default App;
+};
