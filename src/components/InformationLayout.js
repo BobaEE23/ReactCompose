@@ -1,13 +1,15 @@
 import "../App.css";
-export const InformationLayout = ({ isDraw, isGameEnded, currentPlayer }) => {
+export const InformationLayout = ({ getState }) => {
   return (
     <>
-      {isDraw ? (
+      {getState().initialState.isDraw ? (
         <div>Ничья</div>
-      ) : !isDraw && isGameEnded ? (
-        <div>Победа {currentPlayer}</div>
-      ) : !isDraw && !isGameEnded ? (
-        <div>Ходит {currentPlayer}</div>
+      ) : !getState().initialState.isDraw &&
+        getState().initialState.isGameEnded ? (
+        <div>Победа {getState().initialState.currentPlayer}</div>
+      ) : !getState().initialState.isDraw &&
+        !getState().initialState.isGameEnded ? (
+        <div>Ходит {getState().initialState.currentPlayer}</div>
       ) : (
         console.log("ничего")
       )}

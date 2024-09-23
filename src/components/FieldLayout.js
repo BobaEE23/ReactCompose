@@ -1,15 +1,15 @@
 import "../App.css";
 
-export const FieldLayout = ({ field, putSign }) => {
+export const FieldLayout = ({ getState, putSign }) => {
   return (
     <div className="field">
-      {field.map((el, index) => (
+      {getState().initialState.field.map((el, index) => (
         <button
           key={index}
           className="field_btn"
           onClick={() => putSign(Number(index))}
         >
-          {field[index]}
+          {getState().initialState.field[index]}
         </button>
       ))}
     </div>

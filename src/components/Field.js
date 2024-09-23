@@ -1,15 +1,7 @@
+import { type } from "@testing-library/user-event/dist/type";
 import { FieldLayout } from "./FieldLayout";
-import { useState } from "react";
-export const Field = ({
-  field,
-  currentPlayer,
-  setCurrentPlayer,
-  isDraw,
-  setIsDraw,
-  setField,
-  isGameEnded,
-  setIsGameEnded,
-}) => {
+
+export const Field = ({ dispatch, getState }) => {
   const WIN_PATTERNS = [
     [0, 1, 2],
     [3, 4, 5],
@@ -22,7 +14,7 @@ export const Field = ({
   ];
   const searchWinner = (arr) => {
     let winner = false;
-    if (currentPlayer === "x") {
+    if (getState().initialState.currentPlayer === "x") {
       const indexesOfXSigns = arr.reduce((acc, el, index) => {
         if (el === "x") {
           acc.push(index);
@@ -33,7 +25,10 @@ export const Field = ({
         for (let i = 0; i < WIN_PATTERNS.length; i++) {
           winner = WIN_PATTERNS[i].every((el) => indexesOfXSigns.includes(el));
           if (winner) {
-            setIsGameEnded(true);
+            dispatch({
+              type: "setIsGameEnded",
+              payload: { isGameEnded: true },
+            });
             return winner;
           }
         }
@@ -50,7 +45,10 @@ export const Field = ({
           console.log(WIN_PATTERNS[i], indexesOfOSigns);
           winner = WIN_PATTERNS[i].every((el) => indexesOfOSigns.includes(el));
           if (winner) {
-            setIsGameEnded(true);
+            dispatch({
+              type: "setIsGameEnded",
+              payload: { isGameEnded: true },
+            });
             return winner;
           }
         }
@@ -58,16 +56,24 @@ export const Field = ({
     }
   };
   const putSign = (indexOfPutSign) => {
-    if (!isGameEnded) {
+    if (!getState().initialState.isGameEnded) {
       let newArr = [];
-      if (!field[indexOfPutSign] && !isGameEnded) {
-        setField(
-          field.map((elem, index) =>
-            index === indexOfPutSign ? currentPlayer : elem
-          )
+      if (
+        !getState().initialState.field[indexOfPutSign] &&
+        !getState().initialState.isGameEnded
+      ) {
+        const dispatchField = getState().initialState.field.map((elem, index) =>
+          index === indexOfPutSign
+            ? getState().initialState.currentPlayer
+            : elem
         );
-        newArr = field.map((elem, index) =>
-          index === indexOfPutSign ? currentPlayer : elem
+        console.log(dispatchField);
+        dispatch({ type: "setField", payload: { setField: dispatchField } });
+
+        newArr = getState().initialState.field.map((elem, index) =>
+          index === indexOfPutSign
+            ? getState().initialState.currentPlayer
+            : elem
         );
       }
 
@@ -77,18 +83,24 @@ export const Field = ({
           return el !== "";
         });
         if (draw) {
-          setIsDraw(true);
+          dispatch({ type: "setIsDraw", payload: { isDraw: true } });
         }
       }
 
       if (!winOrNot) {
-        if (currentPlayer === "x") {
-          setCurrentPlayer("o");
+        if (getState().initialState.currentPlayer === "x") {
+          dispatch({
+            type: "changeCurrentPlayer",
+            payload: { changePlayer: "o" },
+          });
         } else {
-          setCurrentPlayer("x");
+          dispatch({
+            type: "changeCurrentPlayer",
+            payload: { changePlayer: "x" },
+          });
         }
       }
     }
   };
-  return <FieldLayout field={field} putSign={putSign}></FieldLayout>;
+  return <FieldLayout getState={getState} putSign={putSign}></FieldLayout>;
 };
