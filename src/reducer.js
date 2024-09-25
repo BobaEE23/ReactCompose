@@ -20,7 +20,7 @@ export const reducer = (state = initialState, action) => {
       return { ...state, field: action.payload.setField };
 
     case "restartGame":
-      return { initialState };
+      return initialState;
 
     default:
       return state;

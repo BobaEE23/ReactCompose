@@ -1,15 +1,22 @@
 import "../App.css";
-export const InformationLayout = ({ getState }) => {
+import { store } from "../store";
+import { useEffect, useState } from "react";
+
+export const InformationLayout = () => {
+  const [data, setData] = useState(store.getState());
+  const { getState, subcribe } = store;
+  useEffect(() => {
+    subcribe(() => setData(getState()));
+  }, []);
+
   return (
     <>
-      {getState().initialState.isDraw ? (
+      {getState().isDraw ? (
         <div>Ничья</div>
-      ) : !getState().initialState.isDraw &&
-        getState().initialState.isGameEnded ? (
-        <div>Победа {getState().initialState.currentPlayer}</div>
-      ) : !getState().initialState.isDraw &&
-        !getState().initialState.isGameEnded ? (
-        <div>Ходит {getState().initialState.currentPlayer}</div>
+      ) : !getState().isDraw && getState().isGameEnded ? (
+        <div>Победа {getState().currentPlayer}</div>
+      ) : !getState().isDraw && !getState().isGameEnded ? (
+        <div>Ходит {getState().currentPlayer}</div>
       ) : (
         console.log("ничего")
       )}

@@ -1,15 +1,22 @@
 import "../App.css";
+import { store } from "../store";
+import { useState, useEffect } from "react";
 
-export const FieldLayout = ({ getState, putSign }) => {
+const { getState, subcribe } = store;
+export const FieldLayout = ({ putSign }) => {
+  const [data, setData] = useState(store.getState());
+  useEffect(() => {
+    subcribe(() => setData(getState()));
+  }, []);
   return (
     <div className="field">
-      {getState().initialState.field.map((el, index) => (
+      {getState().field.map((el, index) => (
         <button
           key={index}
           className="field_btn"
           onClick={() => putSign(Number(index))}
         >
-          {getState().initialState.field[index]}
+          {getState().field[index]}
         </button>
       ))}
     </div>

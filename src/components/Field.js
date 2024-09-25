@@ -1,7 +1,13 @@
-import { type } from "@testing-library/user-event/dist/type";
 import { FieldLayout } from "./FieldLayout";
+import { store } from "../store";
+import { useState, useEffect } from "react";
 
-export const Field = ({ dispatch, getState }) => {
+const { dispatch, getState, subcribe } = store;
+export const Field = () => {
+  const [data, setData] = useState(store.getState());
+  useEffect(() => {
+    subcribe(() => setData(getState()));
+  }, []);
   const WIN_PATTERNS = [
     [0, 1, 2],
     [3, 4, 5],
@@ -14,7 +20,7 @@ export const Field = ({ dispatch, getState }) => {
   ];
   const searchWinner = (arr) => {
     let winner = false;
-    if (getState().initialState.currentPlayer === "x") {
+    if (getState().currentPlayer === "x") {
       const indexesOfXSigns = arr.reduce((acc, el, index) => {
         if (el === "x") {
           acc.push(index);
@@ -56,24 +62,17 @@ export const Field = ({ dispatch, getState }) => {
     }
   };
   const putSign = (indexOfPutSign) => {
-    if (!getState().initialState.isGameEnded) {
+    if (!getState().isGameEnded) {
       let newArr = [];
-      if (
-        !getState().initialState.field[indexOfPutSign] &&
-        !getState().initialState.isGameEnded
-      ) {
-        const dispatchField = getState().initialState.field.map((elem, index) =>
-          index === indexOfPutSign
-            ? getState().initialState.currentPlayer
-            : elem
+      if (!getState().field[indexOfPutSign] && !getState().isGameEnded) {
+        const dispatchField = getState().field.map((elem, index) =>
+          index === indexOfPutSign ? getState().currentPlayer : elem
         );
         console.log(dispatchField);
         dispatch({ type: "setField", payload: { setField: dispatchField } });
 
-        newArr = getState().initialState.field.map((elem, index) =>
-          index === indexOfPutSign
-            ? getState().initialState.currentPlayer
-            : elem
+        newArr = getState().field.map((elem, index) =>
+          index === indexOfPutSign ? getState().currentPlayer : elem
         );
       }
 
@@ -88,7 +87,7 @@ export const Field = ({ dispatch, getState }) => {
       }
 
       if (!winOrNot) {
-        if (getState().initialState.currentPlayer === "x") {
+        if (getState().currentPlayer === "x") {
           dispatch({
             type: "changeCurrentPlayer",
             payload: { changePlayer: "o" },
@@ -102,5 +101,5 @@ export const Field = ({ dispatch, getState }) => {
       }
     }
   };
-  return <FieldLayout getState={getState} putSign={putSign}></FieldLayout>;
+  return <FieldLayout putSign={putSign}></FieldLayout>;
 };
